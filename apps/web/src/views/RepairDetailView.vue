@@ -5,16 +5,20 @@ import { ElMessage } from 'element-plus';
 import {
   DRAPE_CHANGE_LABEL,
   EXECUTED_BY_LABEL,
+  NEXT_ACTION_LABEL,
   REPAIR_STATUS_LABEL,
   RESULT_RATING_LABEL,
+  REVIEW_GRADE_LABEL,
   STIFFNESS_LABEL,
   VERDICT_LABEL,
   VISIBILITY_LABEL,
   COLOR_MATCH_LABEL,
   type DrapeChange,
   type ExecutedBy,
+  type NextAction,
   type RepairStatus,
   type ResultRating,
+  type ReviewGrade,
   type Stiffness,
   type Verdict,
   type Visibility,
@@ -203,12 +207,22 @@ function openWorksheet(): void {
                 <el-tag :type="review.verdict === 'good' ? 'success' : review.verdict === 'fair' ? 'warning' : 'danger'" size="small">
                   {{ VERDICT_LABEL[review.verdict as Verdict] }}
                 </el-tag>
+                <el-tag
+                  v-if="review.grade"
+                  :type="review.grade === 'L3' ? 'danger' : review.grade === 'L2' ? 'warning' : 'info'"
+                  size="small"
+                  effect="plain"
+                  style="margin-left: 6px"
+                >
+                  {{ REVIEW_GRADE_LABEL[review.grade as ReviewGrade] }}
+                </el-tag>
+                <el-tag v-if="review.autoEscalated" type="danger" size="small" style="margin-left: 6px">已自动升级 · 已通知家人</el-tag>
                 <span class="muted" style="margin-left: 6px">
                   {{ review.reviewedAt.slice(0, 10) }} · 修补后 {{ review.daysSinceRepair }} 天 · 穿着 {{ review.wornSince ?? 0 }} 次
                 </span>
                 <div v-if="review.verdictNote" class="muted">{{ review.verdictNote }}</div>
                 <div class="muted">
-                  下一步：{{ review.nextAction }}
+                  下一步：{{ NEXT_ACTION_LABEL[review.nextAction as NextAction] ?? review.nextAction }}
                   <span v-if="review.reoccurred"> · 已复发</span>
                 </div>
               </div>

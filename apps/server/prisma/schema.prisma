@@ -280,6 +280,10 @@ model DamageEvent {
   recurrenceIndex Int?      @map("recurrence_index")
   photosSnapshot  Json?     @map("photos_snapshot")
   cancelReason    String?   @map("cancel_reason")
+  /** 复检分级流程：该破损事件上连续判定不合格的轮次数（任一非 failed 结论清零），达到 2 自动升级退役评估 */
+  consecutiveFailures Int   @default(0) @map("consecutive_failures")
+  /** 自动升级为退役评估的时间（由连续两轮不合格触发），null 表示尚未升级 */
+  escalatedAt    DateTime? @map("escalated_at")
   createdBy       String    @map("created_by")
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
@@ -385,6 +389,10 @@ model ReviewResult {
   reoccurred        Boolean  @default(false)
   verdictNote       String?  @map("verdict_note")
   nextAction        String   @map("next_action")
+  /** 复检分级：L1 初检通过 / L2 加严复检 / L3 退役评估 */
+  grade             String   @default("L1")
+  /** 是否由"连续两轮不合格"规则自动升级（L3 时可能为 true；用户主动选退役仍为 false） */
+  autoEscalated     Boolean  @default(false) @map("auto_escalated")
   triggeredRepairId String?  @map("triggered_repair_id")
   sourceReminderId  String?  @map("source_reminder_id")
   createdBy         String   @map("created_by")

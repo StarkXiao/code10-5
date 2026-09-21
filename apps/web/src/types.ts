@@ -145,6 +145,8 @@ export interface ReviewResultRow {
   reoccurred: boolean;
   verdictNote: string | null;
   nextAction: string;
+  grade?: 'L1' | 'L2' | 'L3';
+  autoEscalated?: boolean;
 }
 
 export interface RepairRow {
@@ -200,6 +202,10 @@ export interface DamageRow {
   recurrenceIndex: number | null;
   locationUnknown: boolean;
   locationNote: string | null;
+  /** 复检分级：连续判定不合格的轮次数（任一非 failed 结论清零） */
+  consecutiveFailures?: number;
+  /** 自动升级为退役评估的时间 */
+  escalatedAt?: string | null;
   damageType: { id: string; code: string; name: string };
   part?: { id: string; name: string } | null;
   repairs: RepairRow[];

@@ -310,11 +310,16 @@ export const reviewSchema = z
     confirmEarly: z.boolean().default(false),
   })
   .superRefine((value, ctx) => {
-    if (value.verdict === 'failed' && value.nextAction === 'close') {
+    // 分级流程：不合格进入 L2，只能「返工重修 / 继续观察 / 评估退役」，
+    // 不允许直接闭环（连续两轮不合格由服务端自动升级 L3，不在这里放行）。
+    if (value.verdict === 'failed' && (value.nextAction === 'close' || value.nextAction === 'monitor')) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['nextAction'],
-        message: '复检不合格时不能直接闭环，请选择返工或退役',
+        message:
+          value.nextAction === 'close'
+            ? '复检不合格时不能直接闭环，请选择返工重修或评估退役'
+            : '复检不合格时不能仅继续观察，请选择返工重修或评估退役',
       });
     }
   });

@@ -160,6 +160,25 @@ export const NEXT_ACTION_LABEL = labelMap(NEXT_ACTIONS, {
   close: '闭环结束', monitor: '继续观察', rework: '返工重修', retire: '评估退役',
 });
 
+/**
+ * 复检分级（复检分级流程）：
+ *   L1 初检通过：良好/尚可，破损收口或继续观察；
+ *   L2 加严复检：本轮判定不合格，给一次返工/观察机会；
+ *   L3 退役评估：同一破损连续两轮判定不合格，自动升级，转退役处置并通知家人。
+ */
+export const REVIEW_GRADES = ['L1', 'L2', 'L3'] as const;
+export type ReviewGrade = (typeof REVIEW_GRADES)[number];
+export const REVIEW_GRADE_LABEL = labelMap(REVIEW_GRADES, {
+  L1: 'L1 初检通过',
+  L2: 'L2 加严复检',
+  L3: 'L3 退役评估',
+});
+export const REVIEW_GRADE_DESC: Record<ReviewGrade, string> = {
+  L1: '初检通过：结论为良好/尚可，破损可以收口或继续观察。',
+  L2: '加严复检：本轮判定不合格，请安排返工重修或继续观察；下一轮仍不合格将自动升级为退役评估。',
+  L3: '退役评估：同一破损已连续两轮判定不合格，系统自动升级为退役评估并通知家人。',
+};
+
 export const VISIBILITIES = ['invisible', 'slight', 'noticeable', 'obvious'] as const;
 export type Visibility = (typeof VISIBILITIES)[number];
 export const VISIBILITY_LABEL = labelMap(VISIBILITIES, {

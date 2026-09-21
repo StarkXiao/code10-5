@@ -444,9 +444,14 @@ garmentRouter.get(
         type: 'review' as const,
         at: r.reviewedAt,
         title: `复检结论：${r.verdict}`,
-        detail: `${r.repair.damageEvent.code} · ${r.repair.stitch.name} · ${r.daysSinceRepair} 天后`,
+        detail: `${r.repair.damageEvent.code} · ${r.grade} · ${r.repair.stitch.name} · ${r.daysSinceRepair} 天后`,
         refId: r.id,
-        meta: { nextAction: r.nextAction, reoccurred: r.reoccurred },
+        meta: {
+          nextAction: r.nextAction,
+          reoccurred: r.reoccurred,
+          grade: r.grade,
+          autoEscalated: r.autoEscalated,
+        },
       })),
       ...wears.map((w) => ({
         type: 'wear' as const,

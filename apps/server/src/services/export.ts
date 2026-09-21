@@ -138,7 +138,7 @@ export async function garmentMarkdown(garmentId: string): Promise<string | null>
       }
       for (const review of repair.reviews) {
         lines.push(
-          `- 复检 ${dateOrDash(review.reviewedAt)}：${VERDICT_LABEL[review.verdict as Verdict] ?? review.verdict}（${review.daysSinceRepair} 天后）${review.verdictNote ? ` — ${review.verdictNote}` : ''}`,
+          `- 复检 ${dateOrDash(review.reviewedAt)}：${VERDICT_LABEL[review.verdict as Verdict] ?? review.verdict}（${review.daysSinceRepair} 天后${review.grade ? ` · ${review.grade}` : ''}${review.autoEscalated ? ' · 自动升级退役并通知家人' : ''}）${review.verdictNote ? ` — ${review.verdictNote}` : ''}`,
         );
       }
     }

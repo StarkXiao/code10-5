@@ -69,7 +69,7 @@ function photoUrl(photoId: string): string {
   return photoFileUrl(photoId);
 }
 
-function lastReview(reviews: Array<{ verdict: string; reviewedAt: string }>) {
+function lastReview(reviews: Array<{ verdict: string; reviewedAt: string; grade?: string; autoEscalated?: boolean }>) {
   return reviews.at(-1) ?? null;
 }
 
@@ -312,11 +312,14 @@ function openWorksheet(damageId: string): void {
                       <el-tag v-else size="small" type="warning">未填写</el-tag>
                     </template>
                   </el-table-column>
-                  <el-table-column label="复检" width="160">
+                  <el-table-column label="复检" width="190">
                     <template #default="{ row }">
                       <span v-if="lastReview(row.reviews)">
                         {{ VERDICT_LABEL[lastReview(row.reviews)!.verdict as Verdict] }} ·
                         {{ lastReview(row.reviews)!.reviewedAt.slice(5, 10) }}
+                        <el-tag v-if="lastReview(row.reviews)?.grade === 'L3'" type="danger" size="small" effect="plain">
+                          L3 退役
+                        </el-tag>
                       </span>
                       <el-button v-else size="small" type="primary" link @click="router.push({ name: 'review', params: { id: row.id } })">
                         去复检
