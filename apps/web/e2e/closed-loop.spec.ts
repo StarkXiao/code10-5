@@ -202,9 +202,9 @@ test.describe('衣物修补日志 · 主链路', () => {
     await expect(page.getByText('修补复检')).toBeVisible();
     await page.getByLabel('复检说明').fill('织补处平整，拉扯也没有松动');
     await page.getByRole('button', { name: '提交复检' }).click();
-    // 观察期还没走完：服务端会拦一次，确认后才允许提前复检
-    await expect(page.getByText('提前复检', { exact: true })).toBeVisible();
-    await page.getByRole('button', { name: '仍然提交' }).click();
+    // 观察期还没走完：服务端会拦一次，二次确认后才允许提前复检
+    await expect(page.getByText('观察期未满 · 二次确认', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: '我确认，提前复检' }).click();
 
     // 回到衣物档案，破损已经是「复检通过」
     await expect(page).toHaveURL(/\/garments\//u);

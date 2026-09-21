@@ -380,11 +380,17 @@ model ReviewResult {
   repairId          String   @map("repair_id")
   reviewedAt        DateTime @map("reviewed_at")
   verdict           String
+  grade             String?
   wornSince         Int?     @map("worn_since")
   daysSinceRepair   Int      @map("days_since_repair")
   reoccurred        Boolean  @default(false)
   verdictNote       String?  @map("verdict_note")
   nextAction        String   @map("next_action")
+  /** 观察期未满仍提交复检（二次确认后的提前复检） */
+  earlyConfirmed    Boolean  @default(false) @map("early_confirmed")
+  /** 连续两轮 C 级（不合格），系统强制升级为退役评估 */
+  autoEscalated     Boolean  @default(false) @map("auto_escalated")
+  consecutiveFailed Int      @default(0) @map("consecutive_failed")
   triggeredRepairId String?  @map("triggered_repair_id")
   sourceReminderId  String?  @map("source_reminder_id")
   createdBy         String   @map("created_by")

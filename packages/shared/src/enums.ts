@@ -154,11 +154,42 @@ export const VERDICT_LABEL = labelMap(VERDICTS, {
   good: '良好', fair: '尚可', failed: '不合格',
 });
 
+/**
+ * 复检分级（项目文档 6.1 的「分级流程」）：
+ *   A 级 良好 → 收口；B 级 尚可 → 收口或继续观察；
+ *   C 级 不合格 → 首轮返工，连续两轮不合格时强制升级退役评估。
+ */
+export const REVIEW_GRADES = ['A', 'B', 'C'] as const;
+export type ReviewGrade = (typeof REVIEW_GRADES)[number];
+export const VERDICT_GRADE: Record<Verdict, ReviewGrade> = {
+  good: 'A',
+  fair: 'B',
+  failed: 'C',
+};
+export const REVIEW_GRADE_LABEL = labelMap(REVIEW_GRADES, {
+  A: 'A 级 · 良好',
+  B: 'B 级 · 尚可',
+  C: 'C 级 · 不合格',
+});
+
+/** 连续两轮复检不合格时，系统把处置自动升级为退役评估 */
+export const CONSECUTIVE_FAILED_LIMIT = 2;
+
 export const NEXT_ACTIONS = ['close', 'monitor', 'rework', 'retire'] as const;
 export type NextAction = (typeof NEXT_ACTIONS)[number];
 export const NEXT_ACTION_LABEL = labelMap(NEXT_ACTIONS, {
   close: '闭环结束', monitor: '继续观察', rework: '返工重修', retire: '评估退役',
 });
+
+/**
+ * 每个分级允许选择的下一步（分级流程的动作矩阵）。
+ * C 级单独选 rework 时：若上一轮也不合格，服务端会忽略 rework、强制走 retire。
+ */
+export const ALLOWED_NEXT_ACTIONS: Record<Verdict, readonly NextAction[]> = {
+  good: ['close'],
+  fair: ['close', 'monitor'],
+  failed: ['rework', 'retire'],
+};
 
 export const VISIBILITIES = ['invisible', 'slight', 'noticeable', 'obvious'] as const;
 export type Visibility = (typeof VISIBILITIES)[number];

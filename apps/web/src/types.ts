@@ -140,11 +140,15 @@ export interface ReviewResultRow {
   id: string;
   reviewedAt: string;
   verdict: 'good' | 'fair' | 'failed';
+  grade?: 'A' | 'B' | 'C' | null;
   daysSinceRepair: number;
   wornSince: number | null;
   reoccurred: boolean;
   verdictNote: string | null;
   nextAction: string;
+  earlyConfirmed?: boolean;
+  autoEscalated?: boolean;
+  consecutiveFailed?: number;
 }
 
 export interface RepairRow {

@@ -50,6 +50,16 @@ function connectEvents(): void {
     void refreshBadge();
   });
   source.addEventListener('reminder.updated', () => void refreshBadge());
+  // 家人连续两轮把一件衣服判成不合格时，系统自动升级退役评估并推给家里其他人
+  source.addEventListener('review.escalated', (event) => {
+    const payload = JSON.parse((event as MessageEvent).data) as { garmentName?: string };
+    ElMessage({
+      type: 'warning',
+      message: `家人的「${payload.garmentName ?? '一件衣物'}」连续两轮复检不合格，已自动升级退役评估`,
+      duration: 8000,
+    });
+    void refreshBadge();
+  });
   source.onerror = () => {
     source?.close();
     source = null;

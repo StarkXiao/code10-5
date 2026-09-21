@@ -2,7 +2,13 @@ import type { Response } from 'express';
 import { logger } from '../lib/logger.js';
 
 export interface SseEvent {
-  type: 'reminder.created' | 'reminder.updated' | 'garment.status_changed' | 'sync.required' | 'ping';
+  type:
+    | 'reminder.created'
+    | 'reminder.updated'
+    | 'garment.status_changed'
+    | 'review.escalated'
+    | 'sync.required'
+    | 'ping';
   payload: Record<string, unknown>;
 }
 

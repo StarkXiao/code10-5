@@ -4,6 +4,7 @@
  */
 import { z } from 'zod';
 import {
+  ALLOWED_NEXT_ACTIONS,
   ANNOTATION_KINDS,
   CAUSE_GUESSES,
   COLOR_MATCHES,
@@ -310,11 +311,16 @@ export const reviewSchema = z
     confirmEarly: z.boolean().default(false),
   })
   .superRefine((value, ctx) => {
-    if (value.verdict === 'failed' && value.nextAction === 'close') {
+    if (!ALLOWED_NEXT_ACTIONS[value.verdict].includes(value.nextAction)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['nextAction'],
-        message: '复检不合格时不能直接闭环，请选择返工或退役',
+        message:
+          value.verdict === 'failed'
+            ? 'C 级（不合格）只能选择返工重修或评估退役；若已连续两轮不合格，系统将自动升级为退役评估'
+            : value.verdict === 'fair'
+              ? 'B 级（尚可）只能闭环结束或继续观察'
+              : 'A 级（良好）只能闭环结束',
       });
     }
   });
